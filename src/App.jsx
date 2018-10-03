@@ -4,6 +4,9 @@ import Message from "./Message.jsx";
 import MessageList from "./MessageList.jsx";
 import conversations from './conversations.json';
 
+
+
+
 class App extends Component {
   constructor(props){
   	super(props);
@@ -23,7 +26,12 @@ class App extends Component {
 
   }
   componentDidMount() {
-  console.log("componentDidMount <App />");
+    console.log("componentDidMount <App />");
+    this.connectionSocket = new WebSocket("ws://localhost:3001");
+    this.connectionSocket.onopen = function (event) {
+      connectionSocket.send("Here's some text that the server is urgently awaiting!"); 
+      console.log("Connected to Server");
+  };
   setTimeout(() => {
     console.log("Simulating incoming message");
     // Add a new message to the list of messages in the data store
