@@ -15,21 +15,22 @@ class App extends Component {
 
   }
   addNewMessage = (msg)=>{
-  	console.log("inside function");
+  	console.log("inside function",this.connectionSocket);
   	const newMessage = {
-  		"username": this.state.conversations[0].currentUser.name,
-  		"content":msg
+  		username: this.state.conversations[0].currentUser.name,
+  		content: msg
   	}
-  	const messages = this.state.conversations[0].messages.concat(newMessage);
-  	this.state.conversations[0].messages= messages;
-  	this.setState({conversations});
+  	// const messages = this.state.conversations[0].messages.concat(newMessage);
+  	// this.state.conversations[0].messages= messages;
+    // this.setState({conversations});
+    this.connectionSocket.send(JSON.stringify(newMessage));
 
   }
   componentDidMount() {
     console.log("componentDidMount <App />");
     this.connectionSocket = new WebSocket("ws://localhost:3001");
     this.connectionSocket.onopen = function (event) {
-      connectionSocket.send("Here's some text that the server is urgently awaiting!"); 
+      // this.connectionSocket.send("Here's some text that the server is urgently awaiting!"); 
       console.log("Connected to Server");
   };
   setTimeout(() => {

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 class ChatBar extends Component {
   onKeyDown = (event)=>{
-  	console.log(event.children);
   	if(event.key === "Enter"){
   		this.props.addNewMessage(event.target.value);
   	}
