@@ -10,14 +10,16 @@ import conversations from './conversations.json';
 class App extends Component {
   constructor(props){
   	super(props);
-  	this.state = { conversations };
+  	this.state = {    currentUser: {name: "Bob"},
+                      messages: []
+    };
   	this.addNewMessage = this.addNewMessage.bind(this);
 
   }
   addNewMessage = (msg)=>{
   	console.log("inside function",this.connectionSocket);
   	const newMessage = {
-  		username: this.state.conversations[0].currentUser.name,
+  		username: this.state.currentUser.name,
   		content: msg
   	}
   	// const messages = this.state.conversations[0].messages.concat(newMessage);
@@ -32,17 +34,25 @@ class App extends Component {
     this.connectionSocket.onopen = function (event) {
       // this.connectionSocket.send("Here's some text that the server is urgently awaiting!"); 
       console.log("Connected to Server");
-  };
+    };
+    this.connectionSocket.onmessage = (event) => {
+      
+      let incomingMessage = JSON.parse(event.data);
+      let messagesConcat = this.state.messages.concat(incomingMessage);
+        this.setState({currentUser: this.state.currentUser,
+        messages:messagesConcat});
+
+    };
   setTimeout(() => {
     console.log("Simulating incoming message");
     // Add a new message to the list of messages in the data store
-    const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    const messages = this.state.conversations[0].messages.concat(newMessage);
-    this.state.conversations[0].messages= messages;
+    // const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+    // const messages = this.state.conversations[0].messages.concat(newMessage);
+    // this.state.conversations[0].messages= messages;
 
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
-    this.setState({conversations}); 
+    // // Update the state of the app component.
+    // // Calling setState will trigger a call to render() in App and all child components.
+    // this.setState({conversations}); 
   }, 3000);
 }
 
@@ -54,8 +64,8 @@ class App extends Component {
             Chatty
           </a>
         </nav>
-        <MessageList  messages = { this.state.conversations[0].messages } />
-        <ChatBar addNewMessage={this.addNewMessage} userName = { this.state.conversations[0].currentUser.name } />
+        <MessageList  messages = { this.state.messages } />
+        <ChatBar addNewMessage={this.addNewMessage} userName = { this.state.currentUser.name } />
       </div>
     );
   }
