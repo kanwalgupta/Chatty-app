@@ -11,7 +11,8 @@ class App extends Component {
   constructor(props){
   	super(props);
   	this.state = {    currentUser: {name: "Bob"},
-                      messages: []
+                      messages: [],
+                      onlineUsers: 0
     };
   	this.addNewMessage = this.addNewMessage.bind(this);
     this.updateUserName = this.updateUserName.bind(this);
@@ -27,7 +28,8 @@ class App extends Component {
     }
   	this.setState({
       currentUser : newUser,
-      messages : this.state.messages
+      messages : this.state.messages,
+      onlineUsers : this.state.onlineUsers
 
     });
     this.connectionSocket.send(JSON.stringify(newNotification));
@@ -39,9 +41,6 @@ class App extends Component {
   		username: this.state.currentUser.name,
   		content: msg
   	}
-  	// const messages = this.state.conversations[0].messages.concat(newMessage);
-  	// this.state.conversations[0].messages= messages;
-    // this.setState({conversations});
     this.connectionSocket.send(JSON.stringify(newMessage));
 
   }
@@ -54,11 +53,16 @@ class App extends Component {
       console.log("Connected to Server");
     };
     this.connectionSocket.onmessage = (event) => {
-      
       let incomingMessage = JSON.parse(event.data);
-      let messagesConcat = this.state.messages.concat(incomingMessage);
+      console.log("user count",incomingMessage.type);
+      if(incomingMessage.type === "onlineUsersUpdate"){
         this.setState({currentUser: this.state.currentUser,
-        messages:messagesConcat});
+          messages:this.state.messages,onlineUsers:incomingMessage.content})
+      }else{
+        let messagesConcat = this.state.messages.concat(incomingMessage);
+          this.setState({currentUser: this.state.currentUser,
+          messages:messagesConcat,onlineUsers:this.state.onlineUsers});
+      }
 
     };
   setTimeout(() => {
@@ -81,6 +85,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">
             Chatty
           </a>
+          <span className="online-users">{this.state.onlineUsers} user(s) online</span>
         </nav>
         <MessageList  messages = { this.state.messages } />
         <ChatBar updateUserName={this.updateUserName} addNewMessage={this.addNewMessage} userName = { this.state.currentUser.name } />
