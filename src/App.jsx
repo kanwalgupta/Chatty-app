@@ -14,10 +14,21 @@ class App extends Component {
                       messages: []
     };
   	this.addNewMessage = this.addNewMessage.bind(this);
+    this.updateUserName = this.updateUserName.bind(this);
+  }
+  updateUserName = (username)=>{
+    let newUser = {
+        name : username
+    }
+    
+  	this.setState({
+      currentUser : newUser,
+      messages : this.state.messages
 
+    });
+    
   }
   addNewMessage = (msg)=>{
-  	console.log("inside function",this.connectionSocket);
   	const newMessage = {
   		username: this.state.currentUser.name,
   		content: msg
@@ -28,6 +39,7 @@ class App extends Component {
     this.connectionSocket.send(JSON.stringify(newMessage));
 
   }
+
   componentDidMount() {
     console.log("componentDidMount <App />");
     this.connectionSocket = new WebSocket("ws://localhost:3001");
@@ -65,7 +77,7 @@ class App extends Component {
           </a>
         </nav>
         <MessageList  messages = { this.state.messages } />
-        <ChatBar addNewMessage={this.addNewMessage} userName = { this.state.currentUser.name } />
+        <ChatBar updateUserName={this.updateUserName} addNewMessage={this.addNewMessage} userName = { this.state.currentUser.name } />
       </div>
     );
   }

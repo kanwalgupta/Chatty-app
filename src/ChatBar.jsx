@@ -6,11 +6,16 @@ class ChatBar extends Component {
   		this.props.addNewMessage(event.target.value);
   	}
   }
+  onKeyDownUserName = (event)=>{
+  	if(event.key === "Enter"){
+  		this.props.updateUserName(event.target.value);
+  	}
+  }
   render() {
     return (
       <footer className="chatbar">
         <input
-          className="chatbar-username" 
+          className="chatbar-username" onKeyDown={this.onKeyDownUserName}
           placeholder="Your Name (Optional)" defaultValue={this.props.userName}
         />
         <input
