@@ -20,16 +20,22 @@ class App extends Component {
     let newUser = {
         name : username
     }
-    
+    let newNotification ={
+      type : "postNotification",
+  		username: username,
+  		content: `${this.state.currentUser.name} has changed their name to ${username}`
+    }
   	this.setState({
       currentUser : newUser,
       messages : this.state.messages
 
     });
+    this.connectionSocket.send(JSON.stringify(newNotification));
     
   }
   addNewMessage = (msg)=>{
   	const newMessage = {
+      type : "postMessage",
   		username: this.state.currentUser.name,
   		content: msg
   	}

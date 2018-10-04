@@ -22,11 +22,28 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on('message', function(message) {
    let incomingMessage = JSON.parse(message);
-   let outgoingMessage = {
-                            id : uuidv1(),
-                            username : incomingMessage.username,
-                            content : incomingMessage.content
-                         };
+   let outgoingMessage;
+   switch(incomingMessage.type){
+    case "postMessage":
+      outgoingMessage = {
+        type : "incomingMessage",
+        id : uuidv1(),
+        username : incomingMessage.username,
+        content : incomingMessage.content
+      };
+        break;
+
+    case "postNotification":
+      outgoingMessage = {
+        type : "incomingNotification",
+        id : uuidv1(),
+        username : incomingMessage.username,
+        content : incomingMessage.content
+      };
+
+        break;
+}
+   
     console.log("clients",wss.clients.length);
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
