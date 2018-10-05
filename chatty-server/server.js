@@ -33,12 +33,7 @@ wss.on("connection", ws => {
     type: "onlineUsersUpdate",
     content: wss.clients.size,
   };
-  // wss.clients.forEach(function each(client) {
-  //   if (client.readyState === WebSocket.OPEN) {
-  //     console.log("sending users");
-  //     client.send(JSON.stringify(outgoingMessage));
-  //     }
-  //   });
+
   wss.broadcast(outgoingMessage);
   ws.on("message", function(message) {
     let incomingMessage = JSON.parse(message);
@@ -66,12 +61,6 @@ wss.on("connection", ws => {
     }
     console.log("Outgoing message",outgoingMessage);
     wss.broadcast(outgoingMessage);
-    // console.log("clients",wss.clients.length);
-    // wss.clients.forEach(function each(client) {
-    //   if (client.readyState === WebSocket.OPEN) {
-    //     client.send(JSON.stringify(outgoingMessage));
-    //     }
-    //   });
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
