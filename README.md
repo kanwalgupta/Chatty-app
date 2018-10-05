@@ -5,7 +5,7 @@ A real-time single-page chat app that allows multiple users to change their name
 
 ## Final Product
 
-![Screen Capture]
+![Screen Capture](https://github.com/kanwalgupta/Chatty-app/blob/master/docs/chatty_app_screenshot.png)
 
 ### Dependencies
 
