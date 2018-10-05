@@ -13,13 +13,11 @@ const server = express()
   .listen(PORT, "0.0.0.0", "localhost", () =>
     console.log(`Listening on ${PORT}`)
   );
-
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 wss.broadcast = message => {
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
-      console.log("sending users");
       client.send(JSON.stringify(message));
     }
   });
@@ -33,7 +31,7 @@ wss.on("connection", ws => {
   console.log("size is ", wss.clients.size);
   let outgoingMessage = {
     type: "onlineUsersUpdate",
-    content: wss.clients.size
+    content: wss.clients.size,
   };
   // wss.clients.forEach(function each(client) {
   //   if (client.readyState === WebSocket.OPEN) {
@@ -51,7 +49,8 @@ wss.on("connection", ws => {
           type: "incomingMessage",
           id: uuidv1(),
           username: incomingMessage.username,
-          content: incomingMessage.content
+          content: incomingMessage.content,
+          color: incomingMessage.color
         };
         break;
 
@@ -65,6 +64,7 @@ wss.on("connection", ws => {
 
         break;
     }
+    console.log("Outgoing message",outgoingMessage);
     wss.broadcast(outgoingMessage);
     // console.log("clients",wss.clients.length);
     // wss.clients.forEach(function each(client) {
